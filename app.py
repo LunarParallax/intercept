@@ -718,8 +718,9 @@ def export_aircraft() -> Response:
         response.headers['Content-Disposition'] = 'attachment; filename=aircraft.csv'
         return response
     else:
+        from datetime import timezone
         return jsonify({
-            'timestamp': __import__('datetime').datetime.utcnow().isoformat(),
+            'timestamp': __import__('datetime').datetime.now(timezone.utc).isoformat(),
             'aircraft': adsb_aircraft.values()
         })
 
@@ -751,8 +752,9 @@ def export_wifi() -> Response:
         response.headers['Content-Disposition'] = 'attachment; filename=wifi_networks.csv'
         return response
     else:
+        from datetime import timezone
         return jsonify({
-            'timestamp': __import__('datetime').datetime.utcnow().isoformat(),
+            'timestamp': __import__('datetime').datetime.now(timezone.utc).isoformat(),
             'networks': wifi_networks.values(),
             'clients': wifi_clients.values()
         })
@@ -785,8 +787,9 @@ def export_bluetooth() -> Response:
         response.headers['Content-Disposition'] = 'attachment; filename=bluetooth_devices.csv'
         return response
     else:
+        from datetime import timezone
         return jsonify({
-            'timestamp': __import__('datetime').datetime.utcnow().isoformat(),
+            'timestamp': __import__('datetime').datetime.now(timezone.utc).isoformat(),
             'devices': bt_devices.values(),
             'beacons': bt_beacons.values()
         })

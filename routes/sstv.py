@@ -696,7 +696,7 @@ def iss_position():
     Returns:
         JSON with ISS current position.
     """
-    from datetime import datetime
+    from datetime import datetime, timezone
 
     observer_lat = request.args.get('latitude', type=float)
     observer_lon = request.args.get('longitude', type=float)
@@ -713,7 +713,7 @@ def iss_position():
         'lat': pos['lat'],
         'lon': pos['lon'],
         'altitude': pos['altitude'],
-        'timestamp': datetime.utcnow().isoformat(),
+        'timestamp': datetime.now(timezone.utc).isoformat(),
         'source': pos['source'],
     }
 

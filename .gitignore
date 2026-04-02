@@ -1,41 +1,5 @@
-```gitignore
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.ENV
-.env
-.env.*
-.venv.bak/
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Generated / Build artifacts
-build/
-dist/
-*.egg-info/
-.coverage
-htmlcov/
-.coverage.*
-.nox/
-.tox/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Logs
-*.log
-
-# OS
-.DS_Store
-Thumbs.db
+```
+# Database files
+instance/intercept.db-shm
+instance/intercept.db-wal
 ```
