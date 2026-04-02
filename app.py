@@ -52,7 +52,7 @@ from utils.constants import (
     QUEUE_MAX_SIZE,
 )
 from utils.dependencies import check_all_dependencies, check_tool
-from utils.process import cleanup_stale_dump1090, cleanup_stale_processes
+from utils.process import cleanup_stale_dump1090, cleanup_stale_processes, safe_terminate, unregister_process
 from utils.sdr import SDRFactory
 
 try:
@@ -80,6 +80,8 @@ logger = logging.getLogger('intercept.database')
 
 # Create Flask app
 app = Flask(__name__)
+
+
 def _load_or_generate_secret_key():
     """Load secret key from env var or instance file, generating if needed."""
     env_key = os.environ.get('INTERCEPT_SECRET_KEY')
@@ -87,11 +89,12 @@ def _load_or_generate_secret_key():
         return env_key
     key_path = Path('instance/secret.key')
     if key_path.exists():
-        return key_path.read_text().strip()
+        return key_path.read_text(encoding='utf-8').strip()
     key_path.parent.mkdir(exist_ok=True)
     key = os.urandom(32).hex()
-    key_path.write_text(key)
+    key_path.write_text(key, encoding='utf-8')
     return key
+
 
 app.secret_key = _load_or_generate_secret_key()
 
@@ -116,9 +119,11 @@ else:
         "flask-limiter not installed – rate limiting disabled. "
         "Install with: pip install flask-limiter"
     )
+
     class _NoopLimiter:
         """Stub so @limiter.limit() decorators are silently ignored."""
-        def limit(self, *a, **kw):
+
+        def limit(self, *_args, **_kwargs):
             def decorator(f):
                 return f
             return decorator
@@ -140,15 +145,19 @@ os.environ['WERKZEUG_DEBUG_PIN'] = 'off'
 # ============================================
 # ERROR HANDLERS
 # ============================================
+
+
 @app.errorhandler(429)
-def ratelimit_handler(e):
-    logger.warning(f"Rate limit exceeded for IP: {request.remote_addr}")
+def ratelimit_handler(_e):
+    logger.warning("Rate limit exceeded for IP: %s", request.remote_addr)
     flash("Too many login attempts. Please wait one minute before trying again.", "error")
     return render_template('login.html', version=VERSION), 429
+
 
 # ============================================
 # SECURITY HEADERS
 # ============================================
+
 
 @app.after_request
 def add_security_headers(response):
