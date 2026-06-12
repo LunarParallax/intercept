@@ -1,74 +1,135 @@
-# Python
+```
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
+
+# Distribution / packaging
 .Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
 env/
 venv/
-.venv/
 ENV/
-uv.lock
+env.bak/
+venv.bak/
 
-# Logs
-*.log
-pager_messages.log
+# Spyder project settings
+.spyderproject
+.spyproject
 
-# Local data
-downloads/
-pgdata/
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
 
 # IDE
-.idea/
 .vscode/
-*.swp
-*.swo
-*~
+.idea/
 
-# OS
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
-
-# Distribution
-dist/
-build/
-*.egg-info/
-
-# Package manager lock files & DB files
-uv.lock
-*.db
-*.sqlite3
-intercept.db
-
-# Instance folder (contains database with user data)
-instance/
-
-# Agent configs with real credentials (keep template only)
-intercept_agent_*.cfg
-!intercept_agent.cfg
-
-# Temporary files
-/tmp/
-*.tmp
-
-# Weather satellite runtime data (decoded images, samples, SatDump output)
-data/weather_sat/
-
-# Radiosonde runtime data (station config, logs)
-data/radiosonde/
-
-# SDR capture files (large IQ recordings)
-data/subghz/captures/
-
-# Env files
-.env
-.env.*
-!.env.example
-
-# Local utility scripts
-reset-sdr.*
-.superpowers/
-docs/superpowers/
-
-# Git worktrees
-.worktrees/
+```

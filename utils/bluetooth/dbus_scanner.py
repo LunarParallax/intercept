@@ -61,13 +61,26 @@ class DBusScanner:
         self._lock = threading.Lock()
         self._known_devices: set[str] = set()
 
-    def start(self, transport: str = 'auto', rssi_threshold: int = -100) -> bool:
+    def start(
+        self,
+        transport: str = 'auto',
+        rssi_threshold: int = -100,
+        service_uuids: list[str] | None = None,
+        manufacturer_data: dict[int, bytes] | None = None,
+        service_data: dict[str, bytes] | None = None,
+        pattern: str | None = None,
+    ) -> bool:
         """
         Start DBus discovery.
 
         Args:
             transport: Discovery transport ('bredr', 'le', or 'auto').
             rssi_threshold: Minimum RSSI for discovered devices.
+            service_uuids: List of service UUIDs to filter (e.g., ['fd6f', 'feed']).
+            manufacturer_data: Dict mapping manufacturer IDs to data patterns.
+                              Keys are manufacturer IDs (int), values are bytes patterns.
+            service_data: Dict mapping service UUIDs to data patterns.
+            pattern: Legacy single pattern string (deprecated, use above filters).
 
         Returns:
             True if started successfully, False otherwise.
@@ -120,6 +133,39 @@ class DBusScanner:
                     }
                     if rssi_threshold > -100:
                         filter_dict['RSSI'] = dbus.Int16(rssi_threshold)
+
+                    # Add service UUIDs filter
+                    if service_uuids:
+                        filter_dict['ServiceUUIDs'] = dbus.Array(
+                            [dbus.String(uuid) for uuid in service_uuids],
+                            signature='s'
+                        )
+
+                    # Add manufacturer data filter
+                    if manufacturer_data:
+                        mfr_filter = {}
+                        for mfr_id, pattern in manufacturer_data.items():
+                            mfr_filter[dbus.UInt16(mfr_id)] = dbus.Array(
+                                [dbus.Byte(b) for b in pattern],
+                                signature='y'
+                            )
+                        filter_dict['ManufacturerData'] = dbus.Dictionary(
+                            mfr_filter,
+                            signature='qay'
+                        )
+
+                    # Add service data filter
+                    if service_data:
+                        svc_filter = {}
+                        for uuid, pattern in service_data.items():
+                            svc_filter[dbus.String(uuid)] = dbus.Array(
+                                [dbus.Byte(b) for b in pattern],
+                                signature='y'
+                            )
+                        filter_dict['ServiceData'] = dbus.Dictionary(
+                            svc_filter,
+                            signature='say'
+                        )
 
                     self._adapter.SetDiscoveryFilter(filter_dict)
                 except dbus.exceptions.DBusException as e:
