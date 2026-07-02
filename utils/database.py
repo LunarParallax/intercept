@@ -67,6 +67,9 @@ def get_db():
     try:
         yield conn
         conn.commit()
+    except sqlite3.Error:
+        conn.rollback()
+        raise
     except Exception:
         conn.rollback()
         raise
@@ -335,7 +338,7 @@ def init_db() -> None:
             columns = {row["name"] for row in conn.execute("PRAGMA table_info(tscm_baselines)")}
             if "wifi_clients" not in columns:
                 conn.execute("ALTER TABLE tscm_baselines ADD COLUMN wifi_clients TEXT")
-        except Exception as e:
+        except sqlite3.Error as e:
             logger.debug(f"Schema update skipped for tscm_baselines: {e}")
 
         # TSCM Sweeps - Individual sweep sessions
@@ -1149,6 +1152,33 @@ def set_active_tscm_baseline(baseline_id: int) -> bool:
         return cursor.rowcount > 0
 
 
+def _validate_column_name(column: str, allowed_columns: set[str]) -> bool:
+    """Validate that a column name is safe to use in dynamic SQL.
+    
+    Args:
+        column: The column name to validate
+        allowed_columns: Set of allowed column names
+        
+    Returns:
+        True if the column name is valid and safe
+        
+    Raises:
+        ValueError: If the column name is invalid or potentially malicious
+    """
+    if not column:
+        raise ValueError("Column name cannot be empty")
+    
+    # Check against allowlist
+    if column not in allowed_columns:
+        raise ValueError(f"Invalid column name: {column}")
+    
+    # Additional safety checks - column names should only contain alphanumeric and underscore
+    if not all(c.isalnum() or c == '_' for c in column):
+        raise ValueError(f"Column name contains invalid characters: {column}")
+    
+    return True
+
+
 def update_tscm_baseline(
     baseline_id: int,
     wifi_networks: list | None = None,
@@ -1157,19 +1187,28 @@ def update_tscm_baseline(
     rf_frequencies: list | None = None,
 ) -> bool:
     """Update baseline device lists."""
+    # Define allowed columns for this table
+    ALLOWED_BASELINE_COLUMNS = {
+        'wifi_networks', 'wifi_clients', 'bt_devices', 'rf_frequencies'
+    }
+    
     updates = []
     params = []
 
     if wifi_networks is not None:
+        _validate_column_name('wifi_networks', ALLOWED_BASELINE_COLUMNS)
         updates.append("wifi_networks = ?")
         params.append(json.dumps(wifi_networks))
     if wifi_clients is not None:
+        _validate_column_name('wifi_clients', ALLOWED_BASELINE_COLUMNS)
         updates.append("wifi_clients = ?")
         params.append(json.dumps(wifi_clients))
     if bt_devices is not None:
+        _validate_column_name('bt_devices', ALLOWED_BASELINE_COLUMNS)
         updates.append("bt_devices = ?")
         params.append(json.dumps(bt_devices))
     if rf_frequencies is not None:
+        _validate_column_name('rf_frequencies', ALLOWED_BASELINE_COLUMNS)
         updates.append("rf_frequencies = ?")
         params.append(json.dumps(rf_frequencies))
 
@@ -1224,19 +1263,28 @@ def update_tscm_sweep(
     completed: bool = False,
 ) -> bool:
     """Update a TSCM sweep."""
+    # Define allowed columns for this table
+    ALLOWED_SWEEP_COLUMNS = {
+        'status', 'results', 'anomalies', 'threats_found', 'completed_at'
+    }
+    
     updates = []
     params = []
 
     if status is not None:
+        _validate_column_name('status', ALLOWED_SWEEP_COLUMNS)
         updates.append("status = ?")
         params.append(status)
     if results is not None:
+        _validate_column_name('results', ALLOWED_SWEEP_COLUMNS)
         updates.append("results = ?")
         params.append(json.dumps(results))
     if anomalies is not None:
+        _validate_column_name('anomalies', ALLOWED_SWEEP_COLUMNS)
         updates.append("anomalies = ?")
         params.append(json.dumps(anomalies))
     if threats_found is not None:
+        _validate_column_name('threats_found', ALLOWED_SWEEP_COLUMNS)
         updates.append("threats_found = ?")
         params.append(threats_found)
     if completed:
@@ -1687,10 +1735,17 @@ def update_tscm_schedule(schedule_id: int, **fields) -> bool:
     if not fields:
         return False
 
+    # Define allowed columns for this table
+    ALLOWED_SCHEDULE_COLUMNS = {
+        'name', 'baseline_id', 'zone_name', 'cron_expression', 'sweep_type',
+        'enabled', 'last_run', 'next_run', 'notify_on_threat', 'notify_email'
+    }
+
     updates = []
     params = []
 
     for key, value in fields.items():
+        _validate_column_name(key, ALLOWED_SCHEDULE_COLUMNS)
         updates.append(f"{key} = ?")
         params.append(value)
 
@@ -1856,21 +1911,30 @@ def update_tscm_case(
     notes: str | None = None,
 ) -> bool:
     """Update a TSCM case."""
+    # Define allowed columns for this table
+    ALLOWED_CASE_COLUMNS = {
+        'status', 'priority', 'assigned_to', 'notes', 'updated_at', 'closed_at'
+    }
+    
     updates = ["updated_at = CURRENT_TIMESTAMP"]
     params = []
 
     if status:
+        _validate_column_name('status', ALLOWED_CASE_COLUMNS)
         updates.append("status = ?")
         params.append(status)
         if status == "closed":
             updates.append("closed_at = CURRENT_TIMESTAMP")
     if priority:
+        _validate_column_name('priority', ALLOWED_CASE_COLUMNS)
         updates.append("priority = ?")
         params.append(priority)
     if assigned_to is not None:
+        _validate_column_name('assigned_to', ALLOWED_CASE_COLUMNS)
         updates.append("assigned_to = ?")
         params.append(assigned_to)
     if notes is not None:
+        _validate_column_name('notes', ALLOWED_CASE_COLUMNS)
         updates.append("notes = ?")
         params.append(notes)
 
@@ -2336,28 +2400,41 @@ def update_agent(
     update_last_seen: bool = False,
 ) -> bool:
     """Update an agent's fields."""
+    # Define allowed columns for this table
+    ALLOWED_AGENT_COLUMNS = {
+        'base_url', 'description', 'api_key', 'capabilities', 'interfaces',
+        'gps_coords', 'is_active', 'last_seen'
+    }
+    
     updates = []
     params = []
 
     if base_url is not None:
+        _validate_column_name('base_url', ALLOWED_AGENT_COLUMNS)
         updates.append("base_url = ?")
         params.append(base_url.rstrip("/"))
     if description is not None:
+        _validate_column_name('description', ALLOWED_AGENT_COLUMNS)
         updates.append("description = ?")
         params.append(description)
     if api_key is not None:
+        _validate_column_name('api_key', ALLOWED_AGENT_COLUMNS)
         updates.append("api_key = ?")
         params.append(api_key)
     if capabilities is not None:
+        _validate_column_name('capabilities', ALLOWED_AGENT_COLUMNS)
         updates.append("capabilities = ?")
         params.append(json.dumps(capabilities))
     if interfaces is not None:
+        _validate_column_name('interfaces', ALLOWED_AGENT_COLUMNS)
         updates.append("interfaces = ?")
         params.append(json.dumps(interfaces))
     if gps_coords is not None:
+        _validate_column_name('gps_coords', ALLOWED_AGENT_COLUMNS)
         updates.append("gps_coords = ?")
         params.append(json.dumps(gps_coords))
     if is_active is not None:
+        _validate_column_name('is_active', ALLOWED_AGENT_COLUMNS)
         updates.append("is_active = ?")
         params.append(1 if is_active else 0)
     if update_last_seen:
