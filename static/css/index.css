@@ -73,6 +73,42 @@
     --noise-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='40'%20viewBox='0%200%2040%2040'%3E%3Cg%20fill='%23000000'%20fill-opacity='0.05'%3E%3Ccircle%20cx='3'%20cy='5'%20r='1'/%3E%3Ccircle%20cx='11'%20cy='9'%20r='1'/%3E%3Ccircle%20cx='18'%20cy='3'%20r='1'/%3E%3Ccircle%20cx='26'%20cy='12'%20r='1'/%3E%3Ccircle%20cx='34'%20cy='6'%20r='1'/%3E%3Ccircle%20cx='7'%20cy='19'%20r='1'/%3E%3Ccircle%20cx='15'%20cy='24'%20r='1'/%3E%3Ccircle%20cx='28'%20cy='22'%20r='1'/%3E%3Ccircle%20cx='36'%20cy='18'%20r='1'/%3E%3Ccircle%20cx='5'%20cy='33'%20r='1'/%3E%3Ccircle%20cx='19'%20cy='32'%20r='1'/%3E%3Ccircle%20cx='31'%20cy='34'%20r='1'/%3E%3C/g%3E%3C/svg%3E");
 }
 
+[data-theme="matrix"] {
+    --bg-primary: #000000;
+    --bg-secondary: #030f03;
+    --bg-tertiary: #061a06;
+    --bg-card: #000d00;
+    --bg-elevated: #001a00;
+
+    --accent-cyan: #00ff41;
+    --accent-cyan-dim: rgba(0, 255, 65, 0.15);
+    --accent-green: #00ff41;
+    --accent-green-dim: rgba(0, 255, 65, 0.18);
+    --accent-red: #ff3333;
+    --accent-red-dim: rgba(255, 51, 51, 0.16);
+    --accent-orange: #ffcc00;
+    --accent-amber: #ffcc00;
+    --accent-amber-dim: rgba(255, 204, 0, 0.18);
+
+    --text-primary: #00ff41;
+    --text-secondary: #00cc33;
+    --text-dim: #009922;
+    --text-muted: #006611;
+
+    --border-color: #003300;
+    --border-light: #006600;
+    --border-glow: rgba(0, 255, 65, 0.4);
+
+    --status-online: #00ff41;
+    --status-warning: #ffcc00;
+    --status-error: #ff3333;
+    --status-offline: #006611;
+
+    --grid-line: rgba(0, 255, 65, 0.12);
+    --grid-dot: rgba(0, 255, 65, 0.06);
+    --noise-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='40'%20viewBox='0%200%2040%2040'%3E%3Cg%20fill='%2300ff41'%20fill-opacity='0.08'%3E%3Ccircle%20cx='3'%20cy='5'%20r='1'/%3E%3Ccircle%20cx='11'%20cy='9'%20r='1'/%3E%3Ccircle%20cx='18'%20cy='3'%20r='1'/%3E%3Ccircle%20cx='26'%20cy='12'%20r='1'/%3E%3Ccircle%20cx='34'%20cy='6'%20r='1'/%3E%3Ccircle%20cx='7'%20cy='19'%20r='1'/%3E%3Ccircle%20cx='15'%20cy='24'%20r='1'/%3E%3Ccircle%20cx='28'%20cy='22'%20r='1'/%3E%3Ccircle%20cx='36'%20cy='18'%20r='1'/%3E%3Ccircle%20cx='5'%20cy='33'%20r='1'/%3E%3Ccircle%20cx='19'%20cy='32'%20r='1'/%3E%3Ccircle%20cx='31'%20cy='34'%20r='1'/%3E%3C/g%3E%3C/svg%3E");
+}
+
 [data-theme="light"] body {
     background: var(--bg-primary);
 }
@@ -1287,6 +1323,16 @@ header h1 .tagline {
 }
 
 [data-theme="light"] .theme-toggle .icon-moon {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+[data-theme="matrix"] .theme-toggle .icon-sun {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+[data-theme="matrix"] .theme-toggle .icon-moon {
     opacity: 0;
     transform: rotate(90deg);
 }
@@ -7636,6 +7682,88 @@ body[data-mode="tscm"] {
     box-shadow: 0 10px 24px rgba(18, 40, 66, 0.08);
 }
 
+[data-theme="matrix"] .main-content {
+    border-color: rgba(0, 255, 65, 0.2);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(0, 255, 65, 0.1);
+}
+
+[data-theme="matrix"] .sidebar {
+    border-right-color: rgba(0, 255, 65, 0.2);
+}
+
+[data-theme="matrix"] .section {
+    border-color: rgba(0, 255, 65, 0.25);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="matrix"] .section:hover {
+    border-color: rgba(0, 255, 65, 0.5);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(0, 255, 65, 0.2);
+}
+
+[data-theme="matrix"] .section h3 {
+    background: linear-gradient(180deg, #001a00 0%, #002200 100%);
+    border-bottom-color: rgba(0, 255, 65, 0.3);
+}
+
+[data-theme="matrix"] .section h3::after {
+    background: rgba(0, 10, 0, 0.95);
+    border-color: rgba(0, 255, 65, 0.25);
+}
+
+[data-theme="matrix"] .form-group input,
+[data-theme="matrix"] .form-group select {
+    background: rgba(0, 10, 0, 0.85);
+    border-color: rgba(0, 255, 65, 0.3);
+    color: var(--text-primary);
+}
+
+[data-theme="matrix"] .preset-btn,
+[data-theme="matrix"] .control-btn,
+[data-theme="matrix"] .clear-btn {
+    border-color: rgba(0, 255, 65, 0.4);
+    background: linear-gradient(180deg, rgba(0, 26, 0, 0.92) 0%, rgba(0, 34, 0, 0.94) 100%);
+    color: var(--text-primary);
+}
+
+[data-theme="matrix"] .output-panel {
+    background: linear-gradient(180deg, rgba(0, 10, 0, 0.99) 0%, rgba(0, 15, 0, 0.99) 100%);
+}
+
+[data-theme="matrix"] .output-header {
+    background: linear-gradient(180deg, rgba(0, 26, 0, 0.96) 0%, rgba(0, 34, 0, 0.98) 100%);
+    border-bottom-color: rgba(0, 255, 65, 0.3);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="matrix"] .output-content {
+    background: linear-gradient(180deg, rgba(0, 10, 0, 0.7) 0%, rgba(0, 10, 0, 0.95) 100%);
+}
+
+[data-theme="matrix"] .stats > div {
+    border-color: rgba(0, 255, 65, 0.25);
+    background: linear-gradient(180deg, rgba(0, 26, 0, 0.85) 0%, rgba(0, 34, 0, 0.88) 100%);
+}
+
+[data-theme="matrix"] .message {
+    border-color: rgba(0, 255, 65, 0.3);
+    background: linear-gradient(180deg, rgba(0, 15, 0, 0.88) 0%, rgba(0, 20, 0, 0.9) 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="matrix"] .status-bar {
+    border-top-color: rgba(0, 255, 65, 0.25);
+    background: linear-gradient(180deg, rgba(0, 20, 0, 0.97) 0%, rgba(0, 26, 0, 0.98) 100%);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="matrix"] .status-indicator,
+[data-theme="matrix"] .control-group {
+    border-color: rgba(0, 255, 65, 0.2);
+    background: linear-gradient(180deg, rgba(0, 26, 0, 0.82) 0%, rgba(0, 34, 0, 0.85) 100%);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+}
+
 @media (max-width: 1023px) {
     .run-state-strip {
         margin-left: 8px;
@@ -7753,4 +7881,124 @@ html[data-ui-tier="enhanced"] .status-bar {
 html[data-ui-tier="enhanced"] .status-indicator,
 html[data-ui-tier="enhanced"] .control-group {
     background: linear-gradient(180deg, rgba(3, 6, 6, 0.78) 0%, rgba(2, 4, 4, 0.8) 100%);
+}
+
+/* BLE Advanced Tracking Styles */
+.advanced-tracking-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.advanced-tracking-controls .preset-btn.active {
+    background: linear-gradient(180deg, rgba(0, 255, 65, 0.3) 0%, rgba(0, 200, 50, 0.4) 100%);
+    border-color: var(--ble-accent, #00ff41);
+    color: var(--ble-accent, #00ff41);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+.alert-rules-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.alert-rules-list .empty-state {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 16px;
+    font-size: 11px;
+}
+
+.alert-rule-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 10px;
+}
+
+.alert-rule-item.disabled {
+    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.alert-rule-item .rule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.alert-rule-item .rule-type {
+    font-weight: bold;
+    color: var(--ble-accent, #00ff41);
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+}
+
+.alert-rule-item .rule-filter {
+    color: var(--text-dim);
+    font-size: 9px;
+}
+
+.alert-rule-item .rule-details {
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-size: 9px;
+}
+
+.alert-rule-item .rule-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.alert-rule-item .btn-sm {
+    padding: 4px 8px;
+    font-size: 9px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.alert-rule-item .btn-sm:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+}
+
+.alert-rule-item .btn-sm.btn-danger {
+    background: rgba(255, 80, 80, 0.2);
+    border-color: rgba(255, 80, 80, 0.4);
+    color: #ff5050;
+}
+
+.alert-rule-item .btn-sm.btn-danger:hover {
+    background: rgba(255, 80, 80, 0.3);
+}
+
+/* Matrix theme support for BLE advanced tracking */
+html[data-theme="matrix"] .advanced-tracking-controls .preset-btn.active {
+    background: linear-gradient(180deg, rgba(0, 255, 65, 0.2) 0%, rgba(0, 200, 50, 0.3) 100%);
+    border-color: #00ff41;
+    color: #00ff41;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+}
+
+html[data-theme="matrix"] .alert-rule-item .rule-type {
+    color: #00ff41;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+html[data-theme="matrix"] .alert-rule-item {
+    border-color: rgba(0, 255, 65, 0.3);
+    background: rgba(0, 255, 65, 0.05);
 }
