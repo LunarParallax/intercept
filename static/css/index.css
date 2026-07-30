@@ -7882,3 +7882,123 @@ html[data-ui-tier="enhanced"] .status-indicator,
 html[data-ui-tier="enhanced"] .control-group {
     background: linear-gradient(180deg, rgba(3, 6, 6, 0.78) 0%, rgba(2, 4, 4, 0.8) 100%);
 }
+
+/* BLE Advanced Tracking Styles */
+.advanced-tracking-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.advanced-tracking-controls .preset-btn.active {
+    background: linear-gradient(180deg, rgba(0, 255, 65, 0.3) 0%, rgba(0, 200, 50, 0.4) 100%);
+    border-color: var(--ble-accent, #00ff41);
+    color: var(--ble-accent, #00ff41);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+.alert-rules-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.alert-rules-list .empty-state {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 16px;
+    font-size: 11px;
+}
+
+.alert-rule-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 10px;
+}
+
+.alert-rule-item.disabled {
+    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.alert-rule-item .rule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.alert-rule-item .rule-type {
+    font-weight: bold;
+    color: var(--ble-accent, #00ff41);
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+}
+
+.alert-rule-item .rule-filter {
+    color: var(--text-dim);
+    font-size: 9px;
+}
+
+.alert-rule-item .rule-details {
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-size: 9px;
+}
+
+.alert-rule-item .rule-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+.alert-rule-item .btn-sm {
+    padding: 4px 8px;
+    font-size: 9px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.alert-rule-item .btn-sm:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+}
+
+.alert-rule-item .btn-sm.btn-danger {
+    background: rgba(255, 80, 80, 0.2);
+    border-color: rgba(255, 80, 80, 0.4);
+    color: #ff5050;
+}
+
+.alert-rule-item .btn-sm.btn-danger:hover {
+    background: rgba(255, 80, 80, 0.3);
+}
+
+/* Matrix theme support for BLE advanced tracking */
+html[data-theme="matrix"] .advanced-tracking-controls .preset-btn.active {
+    background: linear-gradient(180deg, rgba(0, 255, 65, 0.2) 0%, rgba(0, 200, 50, 0.3) 100%);
+    border-color: #00ff41;
+    color: #00ff41;
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+}
+
+html[data-theme="matrix"] .alert-rule-item .rule-type {
+    color: #00ff41;
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+html[data-theme="matrix"] .alert-rule-item {
+    border-color: rgba(0, 255, 65, 0.3);
+    background: rgba(0, 255, 65, 0.05);
+}

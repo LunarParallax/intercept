@@ -1195,6 +1195,12 @@ const BluetoothMode = (function() {
         if (selectedDeviceId === device.device_id) {
             selectedDeviceNeedsRefresh = true;
         }
+        
+        // Process through advanced tracking if enabled
+        if (typeof BLEAdvancedTracking !== 'undefined') {
+            BLEAdvancedTracking.processDeviceUpdate(device);
+        }
+        
         scheduleDeviceFlush();
     }
 

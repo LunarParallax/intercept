@@ -173,6 +173,7 @@
     <script>
         window.INTERCEPT_MODE_SCRIPT_MAP = {
             bluetooth: "{{ url_for('static', filename='js/modes/bluetooth.js') }}?v={{ version }}&r=btlocate2",
+            ble_advanced: "{{ url_for('static', filename='js/modes/ble-advanced-tracking.js') }}?v={{ version }}",
             wifi: "{{ url_for('static', filename='js/modes/wifi.js') }}",
             spystations: "{{ url_for('static', filename='js/modes/spy-stations.js') }}",
             meshtastic: "{{ url_for('static', filename='js/modes/meshtastic.js') }}",
