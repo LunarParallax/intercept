@@ -12054,7 +12054,16 @@
         function toggleTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme') || 'dark';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            let newTheme;
+            
+            // Cycle through themes: dark -> light -> matrix -> dark
+            if (currentTheme === 'light') {
+                newTheme = 'matrix';
+            } else if (currentTheme === 'matrix') {
+                newTheme = 'dark';
+            } else {
+                newTheme = 'light';
+            }
 
             html.setAttribute('data-theme', newTheme);
 
