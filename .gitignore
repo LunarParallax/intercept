@@ -1,9 +1,10 @@
-```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
 *.o
 *.obj
+dist/
+build/
 *.class
 *.exe
 *.dll
@@ -12,63 +13,37 @@ __pycache__/
 *.out
 
 # Dependencies
-node_modules/
-venv/
 .venv/
-.env
-.env.local
-.env.*
-
-# Build directories
-dist/
-build/
+venv/
+node_modules/
+.mypy_cache/
+.pytest_cache/
 target/
-*.jar
-*.war
-*.zip
-*.tar.gz
-*.tgz
+.gradle/
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
 *.swo
-*.bak
-*.~
-.DS_Store
-Thumbs.db
+
+# Environment
+.env
+.env.local
+*.env.*
 
 # Editors
 .vscode/
 .idea/
-*.sublime-project
-*.sublime-workspace
 
-# Coverage reports
+# System files
+.DS_Store
+Thumbs.db
+
+# Coverage
 coverage/
 htmlcov/
 .coverage
-
-# Python specific
-*.pyc
-__pycache__/
-.pytest_cache/
-.mypy_cache/
-
-# Java specific
-*.class
-*.jar
-*.war
-*.ear
-.gradle/
-build/
-
-# Node specific
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Compressed files
 *.zip
@@ -89,4 +64,7 @@ yarn-error.log*
 *.Z
 *.lz
 *.lzo
-```
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
