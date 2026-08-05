@@ -72,25 +72,70 @@ APPLE_CONTINUITY_SERVICE_UUID = 'd0611e78-bbb4-4591-a5f8-487910ae4366'
 TILE_COMPANY_ID = 0x00ED  # Tile Inc
 TILE_ALT_COMPANY_ID = 0x038F  # Alternative Tile ID
 TILE_SERVICE_UUID = 'feed'  # Tile service UUID (16-bit)
-TILE_MAC_PREFIXES = ['C4:E7', 'DC:54', 'E4:B0', 'F8:8A', 'E6:43', '90:32', 'D0:72']
+TILE_MAC_PREFIXES = ['C4:E7', 'DC:54', 'E4:B0', 'F8:8A', 'E6:43', '90:32', 'D0:72', 'AA:40', 'C8:5C']
+TILE_ADV_PATTERNS = [
+    bytes([0xED, 0x00]),  # Tile standard advertisement
+    bytes([0xED, 0x01]),  # Tile Pro
+    bytes([0xED, 0x02]),  # Tile Slim
+]
 
 # Samsung SmartTag
 SAMSUNG_COMPANY_ID = 0x0075
 SMARTTAG_SERVICE_UUID = 'fd5a'  # SmartThings Find service
-SMARTTAG_MAC_PREFIXES = ['58:4D', 'A0:75', 'B8:D7', '50:32']
+SMARTTAG_MAC_PREFIXES = ['58:4D', 'A0:75', 'B8:D7', '50:32', 'F4:0E', '34:4D']
+SMARTTAG_ADV_PATTERN = bytes([0x01, 0x00])  # SmartTag advertisement prefix
 
 # Chipolo
 CHIPOLO_COMPANY_ID = 0x0A09
 CHIPOLO_SERVICE_UUID = 'feaa'  # Eddystone beacon (used by some Chipolo)
 CHIPOLO_ALT_SERVICE = 'feb1'
+CHIPOLO_SPOT_SERVICE = 'fd6f'  # Chipolo ONE Spot uses Apple Find My
 
 # PebbleBee
 PEBBLEBEE_SERVICE_UUID = 'feab'
-PEBBLEBEE_MAC_PREFIXES = ['D4:3D', 'E0:E5']
+PEBBLEBEE_MAC_PREFIXES = ['D4:3D', 'E0:E5', 'C9:8A']
+PEBBLEBEE_COMPANY_ID = 0x0118
 
 # Other known trackers
 NUTFIND_COMPANY_ID = 0x0A09
 EUFY_COMPANY_ID = 0x0590
+
+# Additional tracker manufacturers
+JIO_COMPANY_ID = 0x0A7D  # Jio Tag
+MOKOBEACON_COMPANY_ID = 0x00DC  # MokoBeacon
+GIMBAL_COMPANY_ID = 0x0152  # Gimbal beacon
+SWIPE_COMPANY_ID = 0x0157  # Swipe Tracker
+TRACKR_COMPANY_ID = 0x033B  # Trackr (legacy)
+
+# Extended OUI database for tracker MAC prefixes
+TRACKER_OUI_DATABASE = {
+    # Apple (AirTag, Find My accessories)
+    'Apple': ['00:1C:B3', '04:DB:56', '0C:DB:AF', '10:93:E9', '14:8F:C6', 
+              '1C:52:16', '20:25:64', '28:28:5D', '2C:54:CF', '30:65:EC',
+              '34:4B:50', '38:7B:47', '3C:06:30', '40:6C:8F', '40:9C:D8',
+              '44:D8:84', '48:4D:7E', '48:60:00', '48:AE:31', '4C:32:75',
+              '5C:59:47', '5C:EF:7F', '60:03:08', '60:FB:42', '68:A8:6D',
+              '6C:40:08', '70:56:81', '78:CA:39', '78:FD:94', '7C:CF:D4',
+              '7C:D3:C5', '80:ED:2C', '84:38:35', '88:66:A5', '8C:85:90',
+              '90:84:0D', '98:01:A7', '98:D6:BB', '98:F8:DB', '9C:20:7C',
+              'A0:40:A7', 'A8:66:7F', 'AC:12:0F', 'B8:17:C2', 'BC:52:B7',
+              'C0:2C:7A', 'C8:2A:14', 'CC:08:E0', 'D0:25:98', 'D8:BB:C1',
+              'DC:A9:04', 'E0:5F:45', 'E0:F8:47', 'E4:25:E7', 'E8:8D:28',
+              'EC:CB:30', 'F0:B4:79', 'F4:5C:89', 'F8:1E:DF', 'FC:F5:C8'],
+    
+    # Tile
+    'Tile': TILE_MAC_PREFIXES,
+    
+    # Samsung
+    'Samsung': SMARTTAG_MAC_PREFIXES + ['00:12:47', '00:18:AF', '00:1D:25', 
+                                        '00:21:4C', '00:23:39', '00:26:37'],
+    
+    # PebbleBee
+    'PebbleBee': PEBBLEBEE_MAC_PREFIXES,
+    
+    # Generic random address prefixes commonly used by trackers
+    'Random_Static': ['AA:BB', 'CC:DD', 'EE:FF'],  # Test/development
+}
 
 # Generic beacon patterns that may indicate a tracker
 BEACON_SERVICE_UUIDS = [
@@ -156,9 +201,11 @@ TRACKER_SIGNATURES: list[TrackerSignature] = [
         name='Tile Tracker',
         description='Tile Bluetooth tracker',
         company_ids=[TILE_COMPANY_ID, TILE_ALT_COMPANY_ID],
+        manufacturer_data_prefixes=TILE_ADV_PATTERNS,
         service_uuids=[TILE_SERVICE_UUID],
         mac_prefixes=TILE_MAC_PREFIXES,
         name_patterns=['tile'],
+        confidence_boost=0.15,
     ),
 
     # Samsung SmartTag
@@ -167,9 +214,11 @@ TRACKER_SIGNATURES: list[TrackerSignature] = [
         name='Samsung SmartTag',
         description='Samsung SmartThings tracker',
         company_id=SAMSUNG_COMPANY_ID,
+        manufacturer_data_prefixes=[SMARTTAG_ADV_PATTERN],
         service_uuids=[SMARTTAG_SERVICE_UUID],
         mac_prefixes=SMARTTAG_MAC_PREFIXES,
         name_patterns=['smarttag', 'smart tag', 'galaxy tag'],
+        confidence_boost=0.15,
     ),
 
     # Chipolo
@@ -182,11 +231,23 @@ TRACKER_SIGNATURES: list[TrackerSignature] = [
         name_patterns=['chipolo'],
     ),
 
+    # Chipolo ONE Spot (Find My network)
+    TrackerSignature(
+        tracker_type=TrackerType.FINDMY_ACCESSORY,
+        name='Chipolo ONE Spot',
+        description='Chipolo ONE Spot using Apple Find My network',
+        company_id=APPLE_COMPANY_ID,
+        service_uuids=[CHIPOLO_SPOT_SERVICE],
+        name_patterns=['chipolo one spot', 'chipolo spot'],
+        confidence_boost=0.1,
+    ),
+
     # PebbleBee
     TrackerSignature(
         tracker_type=TrackerType.PEBBLEBEE,
         name='PebbleBee',
         description='PebbleBee Bluetooth tracker',
+        company_id=PEBBLEBEE_COMPANY_ID,
         service_uuids=[PEBBLEBEE_SERVICE_UUID],
         mac_prefixes=PEBBLEBEE_MAC_PREFIXES,
         name_patterns=['pebblebee', 'pebble bee', 'honey'],
@@ -199,6 +260,51 @@ TRACKER_SIGNATURES: list[TrackerSignature] = [
         description='Eufy/Anker smart tracker',
         company_id=EUFY_COMPANY_ID,
         name_patterns=['eufy', 'smarttrack'],
+    ),
+
+    # Jio Tag
+    TrackerSignature(
+        tracker_type=TrackerType.UNKNOWN_TRACKER,
+        name='Jio Tag',
+        description='Jio Bluetooth tracker',
+        company_id=JIO_COMPANY_ID,
+        name_patterns=['jio', 'jio tag'],
+    ),
+
+    # MokoBeacon
+    TrackerSignature(
+        tracker_type=TrackerType.UNKNOWN_TRACKER,
+        name='MokoBeacon',
+        description='MokoBeacon iBeacon device',
+        company_id=MOKOBEACON_COMPANY_ID,
+        name_patterns=['mokobeacon', 'moko beacon'],
+    ),
+
+    # Gimbal beacon
+    TrackerSignature(
+        tracker_type=TrackerType.UNKNOWN_TRACKER,
+        name='Gimbal Beacon',
+        description='Gimbal proximity beacon',
+        company_id=GIMBAL_COMPANY_ID,
+        name_patterns=['gimbal'],
+    ),
+
+    # Swipe Tracker
+    TrackerSignature(
+        tracker_type=TrackerType.UNKNOWN_TRACKER,
+        name='Swipe Tracker',
+        description='Swipe Bluetooth tracker',
+        company_id=SWIPE_COMPANY_ID,
+        name_patterns=['swipe', 'swipe tracker'],
+    ),
+
+    # Trackr (legacy)
+    TrackerSignature(
+        tracker_type=TrackerType.UNKNOWN_TRACKER,
+        name='Trackr',
+        description='Trackr legacy tracker',
+        company_id=TRACKR_COMPANY_ID,
+        name_patterns=['trackr'],
     ),
 ]
 
@@ -401,6 +507,9 @@ class TrackerSignatureEngine:
         # Tracking for suspicious presence detection
         self._sighting_history: dict[str, list[datetime]] = {}
         self._fingerprint_cache: dict[str, DeviceFingerprint] = {}
+        
+        # OUI lookup cache for performance
+        self._oui_cache: dict[str, dict] = {}
 
     def detect_tracker(
         self,
@@ -643,6 +752,57 @@ class TrackerSignatureEngine:
             else:
                 normalized.append(uuid_lower)
         return normalized
+
+    def lookup_mac_oui(self, address: str) -> dict | None:
+        """
+        Look up the manufacturer/vendor from a MAC address using the OUI database.
+        
+        Args:
+            address: MAC address in format XX:XX:XX:XX:XX:XX
+            
+        Returns:
+            Dict with 'vendor', 'is_tracker_vendor' keys or None if not found
+        """
+        # Check cache first
+        if address in self._oui_cache:
+            return self._oui_cache[address]
+        
+        if not address or len(address) < 5:
+            result = {
+                'vendor': 'Unknown',
+                'is_tracker_vendor': False,
+                'matched_prefix': None,
+            }
+        else:
+            # Extract first 2-3 octets for matching (supports both 2-octet and 3-octet prefixes)
+            mac_upper = address.upper()
+            
+            # Check against tracker OUI database (supports variable-length prefixes)
+            for vendor, prefixes in TRACKER_OUI_DATABASE.items():
+                for prefix in prefixes:
+                    prefix_upper = prefix.upper()
+                    # Match either exact prefix length or check if MAC starts with prefix
+                    if mac_upper.startswith(prefix_upper):
+                        result = {
+                            'vendor': vendor,
+                            'is_tracker_vendor': True,
+                            'matched_prefix': prefix,
+                        }
+                        break
+                else:
+                    continue
+                break
+            else:
+                # Not found in tracker database
+                result = {
+                    'vendor': 'Unknown',
+                    'is_tracker_vendor': False,
+                    'matched_prefix': None,
+                }
+        
+        # Cache the result
+        self._oui_cache[address] = result
+        return result
 
     def generate_device_fingerprint(
         self,
